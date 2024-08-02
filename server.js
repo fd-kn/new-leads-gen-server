@@ -21,7 +21,15 @@ app.post('/scrape', async (req, res) => {
     }
 
     try {
-        const browser = await puppeteer.launch({ headless: true,});
+
+        const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath();
+        const browser = await puppeteer.launch({ 
+            headless: true,
+            executablePath: executablePath
+        });
+
+        console.log(`Chrome is saved at: ${executablePath}`);
+
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'networkidle2' });
 
