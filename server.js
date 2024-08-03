@@ -1,6 +1,8 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const cors = require('cors');
+const fs = require('fs');
+const { exec } = require('child_process');
 require("dotenv").config();
 
 const app = express();
@@ -24,6 +26,26 @@ app.post('/scrape', async (req, res) => {
 
         const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath();
         console.log(`Chrome executable path: ${executablePath}`);
+
+        if (fs.existsSync(executablePath)) {
+            console.log('Chrome executable found.');
+            // Check and set permissions
+            fs.chmodSync(executablePath, '755');
+            console.log('Permissions set to 755 for Chrome executable.');
+        } else {
+            console.error('Chrome executable not found.');
+            res.status(500).json({ error: `Chrome executable not found at ${executablePath}` });
+            return;
+        }
+
+        const dirPath = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/';
+        fs.readdir(dirPath, (err, files) => {
+            if (err) {
+                console.error('Error reading directory:', err);
+                return;
+            }
+            console.log('Directory contents:', files);
+        });
 
         const browser = await puppeteer.launch({ 
             headless: true,
