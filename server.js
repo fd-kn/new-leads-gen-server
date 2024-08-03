@@ -23,11 +23,14 @@ app.post('/scrape', async (req, res) => {
     try {
 
         const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath();
+        console.log(`Chrome executable path: ${executablePath}`);
+
         const browser = await puppeteer.launch({ 
             headless: true,
             executablePath: executablePath
         });
 
+        console.log('Puppeteer launched successfully');
         console.log(`Chrome is saved at: ${executablePath}`);
 
         const page = await browser.newPage();
@@ -54,6 +57,7 @@ app.post('/scrape', async (req, res) => {
         });
 
     } catch (error) {
+        console.error('Error during Puppeteer operation:', error);
         res.status(500).json({ error: error.message });
     }
 });
