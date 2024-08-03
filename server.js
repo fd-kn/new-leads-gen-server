@@ -34,19 +34,21 @@ app.post('/scrape', async (req, res) => {
             console.log('Permissions set to 755 for Chrome executable.');
         } else {
             console.error('Chrome executable not found.');
+
+            const dirPath = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/';
+            fs.readdir(dirPath, (err, files) => {
+                if (err) {
+                    console.error('Error reading directory:', err);
+                    return;
+                }
+                console.log('Directory contents:', files);
+            });
             res.status(500).json({ error: `Chrome executable not found at ${executablePath}` });
             return;
+        
         }
 
-        const dirPath = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/';
-        fs.readdir(dirPath, (err, files) => {
-            if (err) {
-                console.error('Error reading directory:', err);
-                return;
-            }
-            console.log('Directory contents:', files);
-        });
-
+ 
         const browser = await puppeteer.launch({ 
             headless: true,
             executablePath: executablePath
