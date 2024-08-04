@@ -1,8 +1,6 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const cors = require('cors');
-const fs = require('fs');
-const { exec } = require('child_process');
 require("dotenv").config();
 
 const app = express();
@@ -26,6 +24,8 @@ app.post('/scrape', async (req, res) => {
  
         const browser = await puppeteer.launch({ 
             headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+
         });
 
         console.log('Puppeteer launched successfully');
