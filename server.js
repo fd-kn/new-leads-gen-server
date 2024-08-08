@@ -21,6 +21,9 @@ app.post('/scrape', async (req, res) => {
     }
 
     try {
+
+        console.log('Using Puppeteer executable path:', puppeteer.executablePath());
+
  
         const browser = await puppeteer.launch({ 
             headless: true,
